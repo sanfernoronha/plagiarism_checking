@@ -266,7 +266,7 @@ export default {
         .then(response => {
           console.log(response.data.status);
           console.log(response.data.result);
-
+          console.log(response.data.flag);
           if (response.data.flag) {
             var file = this.target_file;
             var ref = firebase
@@ -313,8 +313,11 @@ export default {
                       url: this.url
                     });
                 });
+                // this.$router.go();
               }
             );
+          } else {
+            window.alert("hello not submitted");
           }
         })
         .catch(error => {
@@ -337,6 +340,9 @@ export default {
           };
           this.assignments.push(data);
         });
+      })
+      .catch(function(error) {
+        window.alert("You have no assignments for this subject!" + error);
       });
 
     db.collection("Student_Auth")

@@ -237,6 +237,9 @@ export default {
               });
             });
         }
+      })
+      .catch(function(error) {
+        window.alert("Create assignments so students can submit!" + error);
       });
   }
 };

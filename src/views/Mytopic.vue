@@ -481,6 +481,9 @@ export default {
 
           this.topics.push(data);
         });
+      })
+      .catch(function(error) {
+        window.alert("You have no assignments!" + error);
       });
   }
 };

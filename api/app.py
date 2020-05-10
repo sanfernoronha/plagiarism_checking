@@ -35,13 +35,15 @@ def test():
     filedata = request.files["file"]
     url = request.form["url"]
     testfile = filedata.read()
-    print(testfile)
-    print(url)
+    
+    
 
     webUrl = urllib.request.urlopen(url)
     d = webUrl.read()
     data = str(d, "utf-8")
+    print("Original is: ",data)
     ori = data.lower()
+    testfile = str(testfile,"utf-8")
     testfile = testfile.lower()
 
     # Calculation of Similar Bigrams
@@ -140,8 +142,9 @@ def test():
         NB_Model = pickle.load(file)
 
     test = [[b_perc, t_perc, fo_perc, fi_perc]]
+    print(test)
     r = NB_Model.predict(test)
-
+    print(r[0])
     result = gen_result(r[0])
     print(result)
     if result == "Non-Plagiarized" or result == "Lightly Plagiarized":
