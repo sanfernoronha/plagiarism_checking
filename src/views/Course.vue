@@ -94,43 +94,31 @@
 
     <v-container>
       <v-row no-gutters>
-        <v-col cols="12" sm="3">
+        <v-col cols="12" sm="4">
           <v-container class="pa-0 ma-0">
             <v-subheader class="white--text">
               Subject
-              <v-btn icon class="white--text">
-                <v-icon>mdi-arrow-up</v-icon>
-              </v-btn>
-              <v-btn icon class="white--text">
-                <v-icon>mdi-arrow-down</v-icon>
-              </v-btn>
+              
+              
             </v-subheader>
           </v-container>
         </v-col>
 
-        <v-col cols="12" sm="3">
+        <v-col cols="12" sm="4">
           <v-container class="pa-0 ma-0">
-            <v-subheader class="white--text">Some header</v-subheader>
+            <v-subheader class="white--text">Year</v-subheader>
           </v-container>
         </v-col>
-        <v-col cols="12" sm="3">
+        <v-col cols="12" sm="4">
           <v-container class="pa-0 ma-0">
             <v-subheader class="white--text">
-              Some header
-              <v-btn icon class="white--text">
-                <v-icon>mdi-arrow-up</v-icon>
-              </v-btn>
-              <v-btn icon class="white--text">
-                <v-icon>mdi-arrow-down</v-icon>
-              </v-btn>
+              Branch
+              
+              
             </v-subheader>
           </v-container>
         </v-col>
-        <v-col cols="12" sm="3">
-          <v-container class="pa-0 ma-0">
-            <v-subheader></v-subheader>
-          </v-container>
-        </v-col>
+       
       </v-row>
       <v-divider class="ma-0 pa-0"></v-divider>
       <v-list class="ma-0 pa-0" dark>
@@ -143,14 +131,14 @@
           >
             <v-container class="ma-0 pa-0">
               <v-row no-gutters>
-                <v-col cols="12" sm="3">
+                <v-col cols="12" sm="4">
                   <v-subheader class="caption font-weight-bold">{{item}}</v-subheader>
                 </v-col>
-                <v-col cols="12" sm="3">
-                  <v-subheader class="caption font-weight-bold">{{classes}} {{branch}}</v-subheader>
+                <v-col cols="12" sm="4">
+                  <v-subheader class="caption font-weight-bold">{{classes}}</v-subheader>
                 </v-col>
-                <v-col cols="12" sm="3">
-                  <v-subheader class="caption font-weight-bold">Bleh</v-subheader>
+                <v-col cols="12" sm="4">
+                  <v-subheader class="caption font-weight-bold">{{branch}}</v-subheader>
                 </v-col>
               </v-row>
               <v-divider></v-divider>

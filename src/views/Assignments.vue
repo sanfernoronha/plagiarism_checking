@@ -133,7 +133,7 @@
         <v-divider class="ma-0 pa-0"></v-divider>
         <v-list class="ma-0 pa-0" dark>
           <v-list-item-group>
-            <v-list-item class="ma-0 pa-0" v-for="item in assignments" :key="item.name">
+            <v-list-item class="ma-0 pa-0" v-for="item in final_list" :key="item.name">
               <v-container class="ma-0 pa-0">
                 <v-row no-gutters>
                   <v-col cols="12" sm="2" md="2" lg="2">
@@ -153,6 +153,7 @@
                   </v-col>
                   <v-col cols="12" sm="4" md="4" lg="4">
                     <v-file-input
+                    :disabled="item.bool"
                       class="mt-5"
                       dense
                       v-model="item.file"
@@ -184,6 +185,7 @@
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on }">
                         <v-btn
+                          :disabled="item.bool"
                           icon
                           v-on="on"
                           class="mt-3 ml-6"
@@ -195,7 +197,31 @@
                       <span>Submit</span>
                     </v-tooltip>
                   </v-col>
-                  <v-col cols="12" sm="2" md="2" lg="2"></v-col>
+                  <v-col cols="12" sm="2" md="2" lg="2" >
+                    <!-- <h1 v-if="item.bool">Pending</h1>
+                    <h1 v-else>Pending</h1> -->
+                    <!-- <h1 v-if="item.bool">Submitted</h1>
+                    <h1 v-else>Pending</h1> -->
+                    <v-chip
+                    class="mt-5"
+                    color="green"
+                    text-color="white"
+                    v-if="item.bool == true"
+                    
+                    >
+                    Submitted
+                    </v-chip>
+                    <v-chip
+                    class="mt-5"
+                    color="orange"
+                    text-color="white"
+                    v-else-if="item.bool == false"
+                    >
+                    Pending
+                    </v-chip>
+                    
+
+                  </v-col>
                 </v-row>
                 <v-divider></v-divider>
               </v-container>
@@ -203,6 +229,26 @@
           </v-list-item-group>
         </v-list>
       </v-container>
+      <v-snackbar
+      v-model="snackbar1"
+      
+    >
+      {{ text1 }}
+      <v-btn
+        color="red"
+        text
+        @click="snackbar1 = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
+    <v-snackbar
+      v-model="snackbar2"
+      
+    >
+      {{ text2 }}
+      
+    </v-snackbar>
     </v-container>
   </v-app>
 </template>
@@ -215,6 +261,10 @@ export default {
   name: "Assignments",
 
   data: () => ({
+    snackbar1:false,
+    text1: 'Submission failed. Plagiarism detected!',
+    snackbar2: false,
+    text2: 'Submission is being processed',
     target_url: "",
     target_file: "",
     target_name: "",
@@ -245,9 +295,47 @@ export default {
     url: "",
     target_total: null,
     student_name: "",
-    student: []
+    student: [],
+    bool: false,
+    final_list: null,
+    reload_flag: false,
+    flag:false
   }),
   methods: {
+    update_db(response){
+        db.collection("Assignments")
+                    .doc(this.target_name)
+                    .update({
+                      total: this.target_total
+                    });
+
+                  db.collection("Submissions")
+                    .doc(this.$route.params.course)
+                    .collection(this.target_name)
+                    .doc(this.$route.params.student)
+                    .set({
+                      Name: this.student[0].name,
+                      label: response.data.result,
+                      url: this.url
+                    });
+    },
+    search1(i,mylist,x){
+        db.collection("Submissions")
+            .doc(this.$route.params.course)
+            .collection(mylist[i]["name"])
+            .get()
+            .then(function(querySnapshot) {
+              querySnapshot.forEach(function(doc) {
+                console.log(doc.id);
+                if (doc.id == x) {
+                  mylist[i]["bool"] = true;
+                  console.log(mylist[i]["name"]);
+                  console.log("Student has submitted");
+                }
+                
+              });
+            });
+    },
     send(url, file, name, total) {
       this.target_total = total;
       this.target_url = url;
@@ -297,27 +385,20 @@ export default {
                   console.log(url);
                   this.target_total += 1;
 
-                  db.collection("Assignments")
-                    .doc(this.target_name)
-                    .update({
-                      total: this.target_total
-                    });
-
-                  db.collection("Submissions")
-                    .doc(this.$route.params.course)
-                    .collection(this.target_name)
-                    .doc(this.$route.params.student)
-                    .set({
-                      Name: this.student[0].name,
-                      label: response.data.result,
-                      url: this.url
-                    });
+                  this.update_db(response);
+                    this.$router.go();
                 });
-                // this.$router.go();
+                
+                this.snackbar2 = true;
+                
+                
+                
               }
             );
           } else {
-            window.alert("hello not submitted");
+            // window.alert("hello not submitted");
+            this.snackbar1 = true;
+
           }
         })
         .catch(error => {
@@ -328,6 +409,7 @@ export default {
   created() {
     db.collection("Assignments")
       .where("subject", "==", this.$route.params.course)
+
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -336,10 +418,25 @@ export default {
             deadline: doc.data().deadline,
             url: doc.data().url,
             file: [],
-            total: doc.data().total
+            total: doc.data().total,
+            bool: false
           };
           this.assignments.push(data);
         });
+        // assignments = [
+        //   {"assignment_name":"Time Complexity","deadline":121321},
+        //   {"ass"}
+        // ]
+        var mylist = this.assignments;
+        var x = this.$route.params.student;
+        for (var i in mylist) {
+          console.log(mylist[i]["name"]);
+          this.search1(i,mylist,x);
+                 
+        }
+        
+        this.final_list = mylist;
+        console.log(this.final_list);
       })
       .catch(function(error) {
         window.alert("You have no assignments for this subject!" + error);

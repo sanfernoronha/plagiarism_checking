@@ -128,7 +128,7 @@
         <v-divider class="ma-0 pa-0"></v-divider>
         <v-alert
           :value="alert"
-          color="primary"
+          color="deep-orange lighten-2"
           icon="mdi-alert"
           class="white white--text mt-5"
           border="left"

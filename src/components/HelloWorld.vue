@@ -63,7 +63,7 @@
               <v-icon>mdi-format-list-bulleted</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>My storage</v-list-item-title>
+              <v-list-item-title>My Subjects</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
