@@ -3,9 +3,10 @@ import os
 import urllib.request
 from nltk.util import ngrams
 import pickle
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-
+cors = CORS(app)
 
 def gen_result(S):
     switch = {
@@ -18,11 +19,13 @@ def gen_result(S):
 
 
 @app.route("/")
+@cross_origin()
 def index():
     return jsonify("Pong!")
 
 
 @app.route("/api/test/", methods=["POST"])
+@cross_origin()
 def test():
     # data = request.get_json()
     # # username = data.get("username")
@@ -156,6 +159,7 @@ def test():
 
 
 @app.after_request
+@cross_origin()
 def add_headers(response):
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
